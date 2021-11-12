@@ -4,18 +4,18 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class SerialMV {
+    private int size; //dimension
+
     private double[] pMatrix; //square matrix size*size
-    private double[] pVector;
-
-    public double[] getpResult() {
-        return pResult;
-    }
-
-    private double[] pResult;
-    private int size;
+    private double[] pVector; //vector
+    private double[] pResult; //result vector
 
     public SerialMV() {
         System.out.println("Serial matrix-vector multiplication program");
+    }
+
+    public double[] getpResult() {
+        return pResult;
     }
 
     public long run(int size, double[] pMatrix, double[] pVector) {

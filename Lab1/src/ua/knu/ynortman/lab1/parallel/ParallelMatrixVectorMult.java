@@ -14,7 +14,7 @@ public class ParallelMatrixVectorMult {
     private double[] pMatrix; //square matrix size*size
     private double[] pVector;
     private double[] pResult;
-    private int size;
+    private final int size;
 
     double[] pProcRows; // Stripe of the matrix on current process
     double[] pProcResult; // Block of result vector on current process
@@ -28,7 +28,6 @@ public class ParallelMatrixVectorMult {
                           in result vector */
 
     private final int MASTER = 0;
-    private int lock = -1;
 
     public ParallelMatrixVectorMult(String[] args, int size) {
         MPI.Init(args);
@@ -56,10 +55,10 @@ public class ParallelMatrixVectorMult {
         long finish = System.nanoTime();
         //printVector(pResult, pResult.length);
         System.out.println("Time of execution parallel: "
-                + TimeUnit.NANOSECONDS.toMicros(finish-start));
-        if(procRank == MASTER) {
+                + TimeUnit.NANOSECONDS.toMicros(finish-start) + " " + procRank);
+        /*if(procRank == MASTER) {
             System.out.println("Result: " + testResult());
-        }
+        }*/
     }
 
     public void finish() {
@@ -69,15 +68,13 @@ public class ParallelMatrixVectorMult {
     private void processInitialization() {
         int restRows; // Number of rows, that haven’t been distributed yet
         int i; // Loop variable
-        MPI.COMM_WORLD.Bcast(new int[] {size}, 0,1, MPI.INT, MASTER);
         restRows = size;
         for (i=0; i<procRank; i++) {
             restRows = restRows - restRows / (procNum - i);
         }
-
         // Determine the number of matrix rows stored on each process
         rowNum = restRows/(procNum-procRank);
-        //rowNum = size/procNum;
+
         // Memory allocation
         this.pMatrix = new double[0];
         this.pVector = new double [size];
@@ -88,10 +85,8 @@ public class ParallelMatrixVectorMult {
         if (procRank == MASTER) {
             // Initial matrix exists only on the pivot process
             pMatrix = new double [size*size];
-
             // Values of elements are defined only on the pivot process
             randomDataInitialization();
-            //dummyDataInitialization();
         }
         MPI.COMM_WORLD.Barrier();
 
