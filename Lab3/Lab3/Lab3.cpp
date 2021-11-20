@@ -29,10 +29,10 @@ void RandomDataInitialization(double* pMatrix, double* pVector, int Size) {
 	int i, j; // Loop variables
 	srand(unsigned(clock()));
 	for (i = 0; i < Size; i++) {
-		pVector[i] = rand() / double(1000);
+		pVector[i] = rand() % 2000 + 10000;
 		for (j = 0; j < Size; j++) {
 			if (j <= i)
-				pMatrix[i * Size + j] = rand() / double(1000);
+				pMatrix[i * Size + j] = rand() % 2000 + 10000;
 			else
 				pMatrix[i * Size + j] = 0;
 		}
@@ -72,7 +72,7 @@ void ProcessInitialization(double*& pMatrix, double*& pVector,
 		pMatrix = new double[Size * Size];
 		pVector = new double[Size];
 		pResult = new double[Size];
-		// DummyDataInitialization (pMatrix, pVector, Size);
+		//DummyDataInitialization (pMatrix, pVector, Size);
 		RandomDataInitialization(pMatrix, pVector, Size);
 	}
 }

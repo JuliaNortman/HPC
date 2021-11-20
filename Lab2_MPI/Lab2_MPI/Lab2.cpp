@@ -106,8 +106,8 @@ void ProcessInitialization(double*& pAMatrix, double*& pBMatrix,
 		pAMatrix = new double[Size * Size];
 		pBMatrix = new double[Size * Size];
 		pCMatrix = new double[Size * Size];
-		DummyDataInitialization(pAMatrix, pBMatrix, Size);
-		//RandomDataInitialization(pAMatrix, pBMatrix, Size);
+		//DummyDataInitialization(pAMatrix, pBMatrix, Size);
+		RandomDataInitialization(pAMatrix, pBMatrix, Size);
 	}
 }
 // Function for checkerboard matrix decomposition
@@ -168,7 +168,7 @@ void BblockCommunication(double* pBblock, int BlockSize) {
 	int PrevProc = GridCoords[0] - 1;
 	if (GridCoords[0] == 0) PrevProc = GridSize - 1;
 	MPI_Sendrecv_replace(pBblock, BlockSize * BlockSize, MPI_DOUBLE,
-		NextProc, 0, PrevProc, 0, ColComm, &Status);
+		PrevProc, 0, NextProc, 0, ColComm, &Status);
 }
 void ParallelResultCalculation(double* pAblock, double* pMatrixAblock,
 	double* pBblock, double* pCblock, int BlockSize) {
@@ -280,7 +280,7 @@ void main(int argc, char* argv[]) {
 		ResultCollection(pCMatrix, pCblock, Size, BlockSize);
 		Finish = MPI_Wtime();
 		Duration = Finish - Start;
-		//TestResult(pAMatrix, pBMatrix, pCMatrix, Size);
+		TestResult(pAMatrix, pBMatrix, pCMatrix, Size);
 		if (ProcRank == 0) {
 			printf("Time of execution = % f\n", Duration);
 		}
